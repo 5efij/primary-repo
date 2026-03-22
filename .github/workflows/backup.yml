@@ -9,6 +9,9 @@ jobs:
   backup:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write   # مهم جداً 🔥
+
     steps:
       - name: سحب المشروع
         uses: actions/checkout@v3
@@ -25,4 +28,4 @@ jobs:
           cd backup-repo
           git add .
           git commit -m "backup update" || echo "no changes"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/5efij/backup-repo.git
+          git push
