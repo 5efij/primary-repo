@@ -6,35 +6,31 @@
   <style>
     body {
       font-family: Arial;
-      background-color: #f4f6f8;
+      background-color: #eef2f7;
       text-align: center;
-      padding: 40px;
-    }
-
-    h1 {
-      color: #333;
+      padding: 20px;
     }
 
     .box {
       background: white;
       padding: 20px;
       margin: 20px auto;
-      width: 300px;
+      width: 350px;
       border-radius: 10px;
       box-shadow: 0 0 10px #ccc;
     }
 
     button {
       padding: 10px 20px;
-      background-color: #007bff;
+      background-color: #28a745;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
 
-    button:hover {
-      background-color: #0056b3;
+    h2 {
+      margin-top: 40px;
     }
   </style>
 
@@ -44,21 +40,38 @@
 
 <h1>Multi-Region Backup System</h1>
 
+<!-- التطبيق -->
 <div class="box">
-  <p><b>Primary Region:</b> Iraq Server 🇮🇶</p>
-  <p><b>Backup Region:</b> Europe Server 🇪🇺</p>
+  <p><b>Primary Region (Iraq)</b></p>
+  <p id="data">Data: Version 1</p>
 </div>
 
 <div class="box">
-  <p id="status">Status: Not Synced ❌</p>
-  <p>Last Backup: <span id="time">-</span></p>
+  <p><b>Backup Region (Europe)</b></p>
+  <p id="backup">Data: Not Synced ❌</p>
 </div>
+
+<p id="status">Status: Waiting...</p>
+<p>Last Backup: <span id="time">-</span></p>
 
 <button onclick="backup()">Run Backup</button>
 
+<!-- الربورت داخل الموقع -->
+<h2>Project Report</h2>
+
+<div class="box">
+  <p><b>Idea:</b> This project simulates cloud backup between two regions.</p>
+  <p><b>Primary:</b> Main data source</p>
+  <p><b>Backup:</b> Secondary storage</p>
+  <p><b>Concepts:</b> Geo-Replication, Redundancy</p>
+</div>
+
 <script>
 function backup() {
-  document.getElementById("status").innerHTML = "Status: Synced ✅";
+  var data = document.getElementById("data").innerHTML;
+
+  document.getElementById("backup").innerHTML = data + " ✅";
+  document.getElementById("status").innerHTML = "Status: Data Transferred ✔️";
 
   var now = new Date();
   document.getElementById("time").innerHTML = now.toLocaleString();
