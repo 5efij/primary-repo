@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Real Backup System</title>
+  <title>Advanced Backup System</title>
 
   <style>
     body {
@@ -17,7 +17,7 @@
       color: black;
       padding: 20px;
       margin: 20px auto;
-      width: 300px;
+      width: 320px;
       border-radius: 10px;
     }
 
@@ -32,12 +32,20 @@
 
     .update { background: #007bff; }
     .backup { background: #28a745; }
+    .download { background: orange; }
+
+    #logs {
+      text-align: left;
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
   </style>
 </head>
 
 <body>
 
-<h1>☁️ Real Cloud Backup Simulation</h1>
+<h1>☁️ Advanced Cloud Backup</h1>
 
 <div class="box">
   <p><b>Primary Data</b></p>
@@ -46,11 +54,20 @@
 
 <p id="status">Status: Waiting...</p>
 
-<button class="update" onclick="updateData()">Update Data</button>
-<button class="backup" onclick="backup()">Run Backup</button>
+<div>
+  <button class="update" onclick="updateData()">Update Data</button>
+  <button class="backup" onclick="backup()">Run Backup</button>
+  <button class="download" onclick="downloadLogs()">Download Logs</button>
+</div>
+
+<div class="box">
+  <h3>Backup Logs</h3>
+  <div id="logs"></div>
+</div>
 
 <script>
 let version = 1;
+let logs = [];
 
 function updateData() {
   version++;
@@ -60,16 +77,38 @@ function updateData() {
 
 function backup() {
   let data = document.getElementById("data").innerText;
+  let now = new Date().toLocaleString();
 
-  // 🔥 إنشاء ملف حقيقي
+  // 🔥 إنشاء ملف باسم الوقت
+  let filename = "backup_" + Date.now() + ".txt";
+
   let blob = new Blob([data], { type: "text/plain" });
   let link = document.createElement("a");
 
   link.href = URL.createObjectURL(blob);
-  link.download = "backup.txt";
+  link.download = filename;
   link.click();
 
-  document.getElementById("status").innerHTML = "Backup File Downloaded ✅";
+  // 🔥 تسجيل العملية
+  let log = "Backup created: " + filename + " at " + now;
+  logs.push(log);
+
+  let logDiv = document.getElementById("logs");
+  logDiv.innerHTML += "<p>" + log + "</p>";
+
+  document.getElementById("status").innerHTML = "Backup Created ✅";
+}
+
+// تحميل السجل
+function downloadLogs() {
+  let content = logs.join("\n");
+
+  let blob = new Blob([content], { type: "text/plain" });
+  let link = document.createElement("a");
+
+  link.href = URL.createObjectURL(blob);
+  link.download = "logs.txt";
+  link.click();
 }
 </script>
 
