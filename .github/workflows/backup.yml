@@ -1,0 +1,28 @@
+name: Auto Backup
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: سحب المشروع
+        uses: actions/checkout@v3
+
+      - name: نسخ إلى الباكب
+        run: |
+          git config --global user.name "backup-bot"
+          git config --global user.email "bot@test.com"
+
+          git clone https://github.com/USERNAME/backup-repo.git
+          
+          cp -r * backup-repo/
+          
+          cd backup-repo
+          git add .
+          git commit -m "backup update"
+          git push
