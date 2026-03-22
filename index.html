@@ -6,36 +6,33 @@
   <style>
     body {
       font-family: Arial;
-      background-color: #f4f6f8;
+      background-color: #eef2f7;
       text-align: center;
-      padding: 40px;
-    }
-
-    h1 {
-      color: #333;
+      padding: 20px;
     }
 
     .box {
       background: white;
       padding: 20px;
       margin: 20px auto;
-      width: 300px;
+      width: 350px;
       border-radius: 10px;
       box-shadow: 0 0 10px #ccc;
     }
 
     button {
-      padding: 10px 20px;
-      background-color: #007bff;
+      padding: 10px 15px;
+      margin: 5px;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
 
-    button:hover {
-      background-color: #0056b3;
-    }
+    .update { background-color: #007bff; }
+    .backup { background-color: #28a745; }
+    .fail { background-color: red; }
+
   </style>
 
 </head>
@@ -44,24 +41,63 @@
 
 <h1>Multi-Region Backup System</h1>
 
+<!-- Primary -->
 <div class="box">
-  <p><b>Primary Region:</b> Iraq Server 🇮🇶</p>
-  <p><b>Backup Region:</b> Europe Server 🇪🇺</p>
+  <p><b>Primary Region (Iraq)</b></p>
+  <p id="data">Data: Version 1</p>
 </div>
 
+<!-- Backup -->
 <div class="box">
-  <p id="status">Status: Not Synced ❌</p>
-  <p>Last Backup: <span id="time">-</span></p>
+  <p><b>Backup Region (Europe)</b></p>
+  <p id="backup">Data: Not Synced ❌</p>
 </div>
 
-<button onclick="backup()">Run Backup</button>
+<!-- Status -->
+<p id="status">Status: Waiting...</p>
+<p>Last Backup: <span id="time">-</span></p>
+
+<!-- Buttons -->
+<button class="update" onclick="updateData()">Update Data</button>
+<button class="backup" onclick="backup()">Run Backup</button>
+<button class="fail" onclick="failSystem()">Simulate Failure</button>
+
+<!-- Report -->
+<h2>Project Report</h2>
+
+<div class="box">
+  <p><b>Idea:</b> Simulating cloud backup between two regions.</p>
+  <p><b>Primary Region:</b> Main data source.</p>
+  <p><b>Backup Region:</b> Secondary storage.</p>
+  <p><b>Concepts:</b> Geo-Replication, Redundancy, Disaster Recovery.</p>
+</div>
 
 <script>
+let version = 1;
+
+// تحديث البيانات
+function updateData() {
+  version++;
+  document.getElementById("data").innerHTML = "Data: Version " + version;
+  document.getElementById("status").innerHTML = "Status: Data Updated ⚡";
+}
+
+// النسخ الاحتياطي
 function backup() {
-  document.getElementById("status").innerHTML = "Status: Synced ✅";
+  var data = document.getElementById("data").innerHTML;
+
+  document.getElementById("backup").innerHTML = data + " ✅";
+  document.getElementById("status").innerHTML = "Status: Data Synced ✔️";
 
   var now = new Date();
   document.getElementById("time").innerHTML = now.toLocaleString();
+}
+
+// فشل النظام (Disaster Recovery)
+function failSystem() {
+  document.getElementById("status").innerHTML = "Primary Failed ❌ Switching to Backup ⚠️";
+
+  document.getElementById("backup").innerHTML += " (Active Now)";
 }
 </script>
 
