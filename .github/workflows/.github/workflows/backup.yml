@@ -13,12 +13,14 @@ jobs:
       - name: سحب المشروع
         uses: actions/checkout@v3
 
-      - name: نسخ إلى الباكب
+      - name: إرسال إلى backup repo
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "backup-bot"
           git config --global user.email "bot@test.com"
 
-          git clone https://github.com/5efij/backup-repo.git
+          git clone https://x-access-token:${TOKEN}@github.com/5efij/backup-repo.git
           
           cp -r * backup-repo/
           
