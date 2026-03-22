@@ -1,2 +1,24 @@
-<h1>Primary Region</h1>
-<p>هذkk مشروعي بالحوسبة السحابية</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cloud Backup System</title>
+</head>
+<body>
+
+<h1>Multi-Region Backup System</h1>
+
+<p>Primary Region: Iraq Server</p>
+<p>Backup Region: Europe Server</p>
+
+<p id="status">Status: Not Synced ❌</p>
+
+<button onclick="backup()">Run Backup</button>
+
+<script>
+function backup() {
+  document.getElementById("status").innerHTML = "Status: Synced ✅";
+}
+</script>
+
+</body>
+</html>
