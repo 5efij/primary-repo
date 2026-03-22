@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Cloud Backup System</title>
+  <title>Cloud Backup Application</title>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -33,7 +33,7 @@
       cursor: pointer;
     }
 
-    .logs {
+    .logs, .cloud {
       background: white;
       color: black;
       padding: 10px;
@@ -49,7 +49,9 @@
 
 <body>
 
-<h1>☁️ Cloud Backup System</h1>
+<h1>☁️ Cloud Backup Application</h1>
+
+<p id="time"></p>
 
 <div class="card">
   <h3>Primary Data</h3>
@@ -60,12 +62,17 @@
 </div>
 
 <button onclick="updateData()">Update Data</button>
-<button onclick="runBackup()">Run Backup (Online)</button>
+<button onclick="runBackup()">Run Backup (Upload)</button>
 <button onclick="simulateFailure()">Simulate Failure</button>
-<button onclick="restoreBackup()">Restore from Cloud</button>
+<button onclick="restoreBackup()">Restore</button>
+<button onclick="loadBackups()">Show Cloud Data</button>
 
 <div class="logs" id="logs">
   <h3>Logs</h3>
+</div>
+
+<div class="cloud" id="cloudData">
+  <h3>Cloud Backups</h3>
 </div>
 
 <script>
@@ -79,44 +86,54 @@ const firebaseConfig = {
   appId: "1:444505696287:web:413222970825ee48434d2a"
 };
 
-// تشغيل Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// بيانات
 let version = 1;
+
+// وقت حي
+setInterval(() => {
+  document.getElementById("time").textContent =
+    "Current Time: " + new Date().toLocaleString();
+}, 1000);
 
 // تحديث البيانات
 function updateData() {
   version++;
   document.getElementById("version").textContent = "Version " + version;
-
   addLog("Data updated to version " + version);
 }
 
-// نسخ احتياطي أونلاين
+// رفع للسحابة
 function runBackup() {
   const time = new Date().toLocaleString();
 
-  db.collection("backups").add({
-    version: version,
-    time: time
-  });
+  document.getElementById("backupStatus").textContent = "Uploading... 🔄";
 
-  document.getElementById("backupStatus").textContent = "Backup Region: ☁️ Saved Online";
+  setTimeout(() => {
+    db.collection("backups").add({
+      version: version,
+      time: time
+    });
 
-  addLog("Backup saved ONLINE at " + time);
+    document.getElementById("backupStatus").textContent = "Saved ☁️";
+
+    addLog("Backup uploaded to cloud at " + time);
+  }, 1500);
 }
 
-// محاكاة فشل
+// فشل + تحويل
 function simulateFailure() {
-  document.getElementById("status").textContent = "Primary Region: 🔴 Failed";
-  document.getElementById("backupStatus").textContent = "Backup Region: 🟡 Taking Over";
+  document.getElementById("status").textContent = "Primary Failed 🔴";
+  document.getElementById("backupStatus").textContent = "Backup Running 🟡";
 
-  addLog("System failure! Backup activated");
+  setTimeout(() => {
+    document.getElementById("backupStatus").textContent = "Backup Active 🟢";
+    addLog("Failover activated");
+  }, 2000);
 }
 
-// 🔥 استرجاع من السحابة
+// استرجاع
 function restoreBackup() {
   db.collection("backups")
     .orderBy("time", "desc")
@@ -128,13 +145,32 @@ function restoreBackup() {
 
         version = data.version;
         document.getElementById("version").textContent = "Version " + version;
+        document.getElementById("status").textContent = "Restored 🟢";
 
-        document.getElementById("status").textContent = "Primary Region: 🟢 Restored";
-
-        addLog("Restored from cloud backup (" + data.time + ")");
-      } else {
-        alert("No backup found!");
+        addLog("Restored from cloud");
       }
+    });
+}
+
+// عرض البيانات من السحابة
+function loadBackups() {
+  const container = document.getElementById("cloudData");
+  container.innerHTML = "<h3>Cloud Backups</h3>Loading...";
+
+  db.collection("backups")
+    .orderBy("time", "desc")
+    .get()
+    .then((snapshot) => {
+      container.innerHTML = "<h3>Cloud Backups</h3>";
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+
+        const p = document.createElement("p");
+        p.textContent = "Version: " + data.version + " | Time: " + data.time;
+
+        container.appendChild(p);
+      });
     });
 }
 
