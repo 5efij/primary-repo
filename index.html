@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Advanced Cloud Backup</title>
+  <title>Cloud Backup System</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
   <style>
     body {
       background: linear-gradient(to right, #1e3c72, #2a5298);
@@ -21,24 +26,18 @@
     }
 
     button {
-      padding: 10px 15px;
+      padding: 10px;
       margin: 5px;
       border-radius: 10px;
       border: none;
       cursor: pointer;
-      font-weight: bold;
     }
-
-    .btn1 { background: #3498db; color: white; }
-    .btn2 { background: #2ecc71; color: white; }
-    .btn3 { background: #f39c12; color: white; }
-    .btn4 { background: #e74c3c; color: white; }
 
     .logs {
       background: white;
       color: black;
-      padding: 15px;
-      border-radius: 15px;
+      padding: 10px;
+      border-radius: 10px;
       width: 300px;
       margin: 20px auto;
       height: 150px;
@@ -50,77 +49,78 @@
 
 <body>
 
-  <h1>☁️ Advanced Cloud Backup</h1>
+<h1>☁️ Cloud Backup System</h1>
 
-  <div class="card">
-    <h3>Primary Data</h3>
-    <p id="version">Version 4</p>
+<div class="card">
+  <h3>Primary Data</h3>
+  <p id="version">Version 1</p>
 
-    <p id="status">Primary Region: 🟢 Online</p>
-    <p id="backupStatus">Backup Region: 🟢 Synced</p>
-  </div>
+  <p id="status">Primary Region: 🟢 Online</p>
+  <p id="backupStatus">Backup Region: 🟢 Ready</p>
+</div>
 
-  <p>Backup Created ✅</p>
+<button onclick="updateData()">Update Data</button>
+<button onclick="runBackup()">Run Backup (Online)</button>
+<button onclick="simulateFailure()">Simulate Failure</button>
 
-  <button class="btn1" onclick="updateData()">Update Data</button>
-  <button class="btn2" onclick="runBackup()">Run Backup</button>
-  <button class="btn3" onclick="downloadLogs()">Download Logs</button>
-  <button class="btn4" onclick="simulateFailure()">Simulate Failure</button>
-
-  <div class="logs" id="logs">
-    <h3>Backup Logs</h3>
-  </div>
+<div class="logs" id="logs">
+  <h3>Logs</h3>
+</div>
 
 <script>
-let version = 4;
+// 🔥 Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyDtpInC0JbD1cSWnJXhcbRPPRpuOpDIPD4",
+  authDomain: "cloud-backup-28852.firebaseapp.com",
+  projectId: "cloud-backup-28852",
+  storageBucket: "cloud-backup-28852.firebasestorage.app",
+  messagingSenderId: "444505696287",
+  appId: "1:444505696287:web:413222970825ee48434d2a"
+};
 
+// تشغيل Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// بيانات
+let version = 1;
+
+// تحديث البيانات
 function updateData() {
   version++;
   document.getElementById("version").textContent = "Version " + version;
 
-  const logBox = document.getElementById("logs");
-  const time = new Date().toLocaleString();
-
-  const log = document.createElement("p");
-  log.textContent = "Data updated to Version " + version + " at " + time;
-  logBox.appendChild(log);
+  addLog("Data updated to version " + version);
 }
 
+// نسخ احتياطي أونلاين
 function runBackup() {
-  const logBox = document.getElementById("logs");
   const time = new Date().toLocaleString();
 
-  document.getElementById("backupStatus").textContent = "Backup Region: 🔄 Syncing...";
+  db.collection("backups").add({
+    version: version,
+    time: time
+  });
 
-  setTimeout(() => {
-    document.getElementById("backupStatus").textContent = "Backup Region: 🟢 Synced";
+  document.getElementById("backupStatus").textContent = "Backup Region: ☁️ Saved Online";
 
-    const newLog = document.createElement("p");
-    newLog.textContent = "Backup created at " + time;
-    logBox.appendChild(newLog);
-  }, 1000);
+  addLog("Backup saved ONLINE at " + time);
 }
 
+// محاكاة فشل
 function simulateFailure() {
   document.getElementById("status").textContent = "Primary Region: 🔴 Failed";
   document.getElementById("backupStatus").textContent = "Backup Region: 🟡 Taking Over";
 
-  const logBox = document.getElementById("logs");
-  const time = new Date().toLocaleString();
-
-  const log = document.createElement("p");
-  log.textContent = "FAILOVER: Backup took control at " + time;
-  logBox.appendChild(log);
+  addLog("System failure! Backup activated");
 }
 
-function downloadLogs() {
-  const logs = document.getElementById("logs").innerText;
-  const blob = new Blob([logs], { type: "text/plain" });
-
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "backup_logs.txt";
-  a.click();
+// إضافة Log
+function addLog(text) {
+  const logBox = document.getElementById("logs");
+  const p = document.createElement("p");
+  p.textContent = text;
+  logBox.appendChild(p);
 }
 </script>
 
