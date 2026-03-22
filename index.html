@@ -1,114 +1,126 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Advanced Backup System</title>
-
+  <title>Advanced Cloud Backup</title>
   <style>
     body {
-      font-family: Arial;
       background: linear-gradient(to right, #1e3c72, #2a5298);
       color: white;
+      font-family: Arial;
       text-align: center;
       padding: 20px;
     }
 
-    .box {
+    .card {
       background: white;
-      color: brawn;
+      color: black;
       padding: 20px;
-      margin: 20px auto;
-      width: 320px;
-      border-radius: 10px;
+      border-radius: 15px;
+      width: 300px;
+      margin: auto;
     }
 
     button {
-      padding: 10px;
+      padding: 10px 15px;
       margin: 5px;
+      border-radius: 10px;
       border: none;
-      border-radius: 5px;
-      color: white;
       cursor: pointer;
+      font-weight: bold;
     }
 
-    .update { background: #007bff; }
-    .backup { background: #28a745; }
-    .download { background: orange; }
+    .btn1 { background: #3498db; color: white; }
+    .btn2 { background: #2ecc71; color: white; }
+    .btn3 { background: #f39c12; color: white; }
+    .btn4 { background: #e74c3c; color: white; }
 
-    #logs {
+    .logs {
+      background: white;
+      color: black;
+      padding: 15px;
+      border-radius: 15px;
+      width: 300px;
+      margin: 20px auto;
+      height: 150px;
+      overflow-y: scroll;
       text-align: left;
-      max-height: 150px;
-      overflow-y: auto;
-      font-size: 14px;
     }
   </style>
 </head>
 
 <body>
 
-<h1>☁️ ..,Advanced Cloud Backup</h1>
+  <h1>☁️ Advanced Cloud Backup</h1>
 
-<div class="box">
-  <p><b>Primary Data</b></p>
-  <p id="data">Version 1</p>
-</div>
+  <div class="card">
+    <h3>Primary Data</h3>
+    <p id="version">Version 4</p>
 
-<p id="status">Status: Waiting...</p>
+    <p id="status">Primary Region: 🟢 Online</p>
+    <p id="backupStatus">Backup Region: 🟢 Synced</p>
+  </div>
 
-<div>
-  <button class="update" onclick="updateData()">Update Data</button>
-  <button class="backup" onclick="backup()">Run Backup</button>
-  <button class="download" onclick="downloadLogs()">Download Logs</button>
-</div>
+  <p>Backup Created ✅</p>
 
-<div class="box">
-  <h3>Backup Logs</h3>
-  <div id="logs"></div>
-</div>
+  <button class="btn1" onclick="updateData()">Update Data</button>
+  <button class="btn2" onclick="runBackup()">Run Backup</button>
+  <button class="btn3" onclick="downloadLogs()">Download Logs</button>
+  <button class="btn4" onclick="simulateFailure()">Simulate Failure</button>
+
+  <div class="logs" id="logs">
+    <h3>Backup Logs</h3>
+  </div>
 
 <script>
-let version = 1;
-let logs = [];
+let version = 4;
 
 function updateData() {
   version++;
-  document.getElementById("data").innerHTML = "Version " + version;
-  document.getElementById("status").innerHTML = "Data Updated ⚡";
+  document.getElementById("version").textContent = "Version " + version;
+
+  const logBox = document.getElementById("logs");
+  const time = new Date().toLocaleString();
+
+  const log = document.createElement("p");
+  log.textContent = "Data updated to Version " + version + " at " + time;
+  logBox.appendChild(log);
 }
 
-function backup() {
-  let data = document.getElementById("data").innerText;
-  let now = new Date().toLocaleString();
+function runBackup() {
+  const logBox = document.getElementById("logs");
+  const time = new Date().toLocaleString();
 
-  // 🔥 إنشاء ملف باسم الوقت
-  let filename = "backup_" + Date.now() + ".txt";
+  document.getElementById("backupStatus").textContent = "Backup Region: 🔄 Syncing...";
 
-  let blob = new Blob([data], { type: "text/plain" });
-  let link = document.createElement("a");
+  setTimeout(() => {
+    document.getElementById("backupStatus").textContent = "Backup Region: 🟢 Synced";
 
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-  link.click();
-
-  // 🔥 تسجيل العملية
-  let log = .."Backup created: " + filename + " at " + now;
-  logs.push(log);
-
-  let logDiv = document.getElementById("logs");
-  logDiv.innerHTML += "<p>" + log + "</p>";
-
-  document.getElementById("status").innerHTML = "Backup Created ✅";
+    const newLog = document.createElement("p");
+    newLog.textContent = "Backup created at " + time;
+    logBox.appendChild(newLog);
+  }, 1000);
 }
 
-// تحميل السجل
+function simulateFailure() {
+  document.getElementById("status").textContent = "Primary Region: 🔴 Failed";
+  document.getElementById("backupStatus").textContent = "Backup Region: 🟡 Taking Over";
+
+  const logBox = document.getElementById("logs");
+  const time = new Date().toLocaleString();
+
+  const log = document.createElement("p");
+  log.textContent = "FAILOVER: Backup took control at " + time;
+  logBox.appendChild(log);
+}
+
 function downloadLogs() {
-  let content = logs.join("\n");
+  const logs = document.getElementById("logs").innerText;
+  const blob = new Blob([logs], { type: "text/plain" });
 
-  let blob = new Blob([content], { type: "text/plain" });
-  let link = document.createElement("a");
-
-  link.href = URL.createObjectURL(blob);
-  link.download = "logs.txt";
-  link.click();
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "backup_logs.txt";
+  a.click();
 }
 </script>
 
