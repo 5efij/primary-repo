@@ -2,25 +2,64 @@
 <html>
 <head>
   <title>Cloud Backup System</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #f4f6f8;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .box {
+      background: white;
+      padding: 20px;
+      margin: 20px auto;
+      width: 300px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+
 </head>
 
 <body>
 
 <h1>Multi-Region Backup System</h1>
 
-<p>Primary Region: Iraq Server</p>
-<p>Backup Region: Europe Server</p>
+<div class="box">
+  <p><b>Primary Region:</b> Iraq Server 🇮🇶</p>
+  <p><b>Backup Region:</b> Europe Server 🇪🇺</p>
+</div>
 
-<p id="status">Status: Not Synced ❌</p>
-
-<p>Last Backup Time: <span id="time">-</span></p>
+<div class="box">
+  <p id="status">Status: Not Synced ❌</p>
+  <p>Last Backup: <span id="time">-</span></p>
+</div>
 
 <button onclick="backup()">Run Backup</button>
 
 <script>
 function backup() {
   document.getElementById("status").innerHTML = "Status: Synced ✅";
-  
+
   var now = new Date();
   document.getElementById("time").innerHTML = now.toLocaleString();
 }
