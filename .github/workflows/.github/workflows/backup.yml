@@ -13,14 +13,16 @@ jobs:
       - name: سحب المشروع
         uses: actions/checkout@v3
 
-      - name: نسخ الملفات
+      - name: نسخ للباك اب
         run: |
+          git config --global user.name "backup-bot"
+          git config --global user.email "bot@test.com"
+
           git clone https://github.com/5efij/backup-repo.git
-          rsync -av --exclude='.git' ./ backup-repo/
+          
+          cp -r * backup-repo/
           
           cd backup-repo
-          git config user.name "backup-bot"
-          git config user.email "bot@test.com"
           git add .
-          git commit -m "backup update" || echo "no changes"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/5efij/backup-repo.git
+          git commit -m "backup update"
+          git push
