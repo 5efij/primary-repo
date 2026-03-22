@@ -62,6 +62,7 @@
 <button onclick="updateData()">Update Data</button>
 <button onclick="runBackup()">Run Backup (Online)</button>
 <button onclick="simulateFailure()">Simulate Failure</button>
+<button onclick="restoreBackup()">Restore from Cloud</button>
 
 <div class="logs" id="logs">
   <h3>Logs</h3>
@@ -115,7 +116,29 @@ function simulateFailure() {
   addLog("System failure! Backup activated");
 }
 
-// إضافة Log
+// 🔥 استرجاع من السحابة
+function restoreBackup() {
+  db.collection("backups")
+    .orderBy("time", "desc")
+    .limit(1)
+    .get()
+    .then((snapshot) => {
+      if (!snapshot.empty) {
+        const data = snapshot.docs[0].data();
+
+        version = data.version;
+        document.getElementById("version").textContent = "Version " + version;
+
+        document.getElementById("status").textContent = "Primary Region: 🟢 Restored";
+
+        addLog("Restored from cloud backup (" + data.time + ")");
+      } else {
+        alert("No backup found!");
+      }
+    });
+}
+
+// Logs
 function addLog(text) {
   const logBox = document.getElementById("logs");
   const p = document.createElement("p");
