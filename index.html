@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Cloud Backup Dashboard</title>
+  <title>Real Backup System</title>
 
   <style>
     body {
@@ -12,138 +12,64 @@
       padding: 20px;
     }
 
-    h1 {
-      margin-bottom: 30px;
-    }
-
-    .container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
     .box {
       background: white;
       color: black;
       padding: 20px;
-      width: 250px;
+      margin: 20px auto;
+      width: 300px;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
-
-    .status {
-      margin: 20px;
-      font-size: 18px;
     }
 
     button {
-      padding: 10px 15px;
+      padding: 10px;
       margin: 5px;
       border: none;
       border-radius: 5px;
-      cursor: pointer;
       color: white;
+      cursor: pointer;
     }
 
     .update { background: #007bff; }
     .backup { background: #28a745; }
-    .fail { background: red; }
-
-    /* Animation */
-    #transfer {
-      margin: 15px;
-      display: none;
-      font-weight: bold;
-      animation: move 1s infinite;
-    }
-
-    @keyframes move {
-      0% { transform: translateX(-30px); }
-      50% { transform: translateX(30px); }
-      100% { transform: translateX(-30px); }
-    }
-
   </style>
-
 </head>
 
 <body>
 
-<h1>☁️ Cloud Backup Dashboard</h1>
+<h1>☁️ Real Cloud Backup Simulation</h1>
 
-<div class="container">
-
-  <div class="box">
-    <h3>Primary Region 🇮🇶</h3>
-    <p id="data">Data: Version 1</p>
-  </div>
-
-  <div class="box">
-    <h3>Backup Region 🇪🇺</h3>
-    <p id="backup">Data: Not Synced ❌</p>
-  </div>
-
+<div class="box">
+  <p><b>Primary Data</b></p>
+  <p id="data">Version 1</p>
 </div>
 
-<div id="transfer">🚀 Transferring Data...</div>
+<p id="status">Status: Waiting...</p>
 
-<div class="status">
-  <p id="status">Status: Waiting...</p>
-  <p>Last Backup: <span id="time">-</span></p>
-  <p id="count">Backups: 0</p>
-</div>
-
-<div>
-  <button class="update" onclick="updateData()">Update Data</button>
-  <button class="backup" onclick="backup()">Run Backup</button>
-  <button class="fail" onclick="failSystem()">Simulate Failure</button>
-</div>
+<button class="update" onclick="updateData()">Update Data</button>
+<button class="backup" onclick="backup()">Run Backup</button>
 
 <script>
 let version = 1;
-let count = 0;
 
-// تحديث البيانات
 function updateData() {
   version++;
-  document.getElementById("data").innerHTML = "Data: Version " + version;
-
-  document.getElementById("status").innerHTML = "Status: Data Updated ⚡";
-  document.getElementById("status").style.color = "yellow";
+  document.getElementById("data").innerHTML = "Version " + version;
+  document.getElementById("status").innerHTML = "Data Updated ⚡";
 }
 
-// النسخ الاحتياطي + الحركة
 function backup() {
-  var transfer = document.getElementById("transfer");
-  transfer.style.display = "block";
+  let data = document.getElementById("data").innerText;
 
-  setTimeout(function() {
-    var data = document.getElementById("data").innerHTML;
+  // 🔥 إنشاء ملف حقيقي
+  let blob = new Blob([data], { type: "text/plain" });
+  let link = document.createElement("a");
 
-    document.getElementById("backup").innerHTML = data + " ✅";
+  link.href = URL.createObjectURL(blob);
+  link.download = "backup.txt";
+  link.click();
 
-    count++;
-    document.getElementById("count").innerHTML = "Backups: " + count;
-
-    document.getElementById("status").innerHTML = "Status: Synced ✔️";
-    document.getElementById("status").style.color = "lightgreen";
-
-    var now = new Date();
-    document.getElementById("time").innerHTML = now.toLocaleString();
-
-    transfer.style.display = "none";
-  }, 1500);
-}
-
-// فشل النظام (Disaster Recovery)
-function failSystem() {
-  document.getElementById("status").innerHTML =
-    "Primary Failed ❌ Switching to Backup ⚠️";
-
-  document.getElementById("status").style.color = "red";
-
-  document.getElementById("backup").innerHTML += " (Active Now)";
+  document.getElementById("status").innerHTML = "Backup File Downloaded ✅";
 }
 </script>
 
