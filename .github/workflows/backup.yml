@@ -9,23 +9,12 @@ jobs:
   backup:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
-
     steps:
-      - name: سحب المشروع
-        uses: actions/checkout@v3
-
-      - name: نسخ للباك اب
-        run: |
-          git config --global user.name "backup-bot"
-          git config --global user.email "bot@test.com"
-
-          git clone https://github.com/5efij/backup-repo.git
-          
-          rsync -av --exclude='.git' ./ backup-repo/
-
-          cd backup-repo
-          git add .
-          git commit -m "backup update" || echo "no changes"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/5efij/backup-repo.git
+      - name: نسخ المشروع للباك اب
+        uses: andstor/copycat-action@v3
+        with:
+          personal_token: ${{ secrets.GITHUB_TOKEN }}
+          src_path: .
+          dst_path: .
+          dst_owner: 5efij
+          dst_repo_name: backup-repo
