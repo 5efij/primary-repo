@@ -3,6 +3,7 @@
 <head>
   <title>Cloud Backup System</title>
 </head>
+
 <body>
 
 <h1>Multi-Region Backup System</h1>
@@ -12,11 +13,16 @@
 
 <p id="status">Status: Not Synced ❌</p>
 
+<p>Last Backup Time: <span id="time">-</span></p>
+
 <button onclick="backup()">Run Backup</button>
 
 <script>
 function backup() {
   document.getElementById("status").innerHTML = "Status: Synced ✅";
+  
+  var now = new Date();
+  document.getElementById("time").innerHTML = now.toLocaleString();
 }
 </script>
 
