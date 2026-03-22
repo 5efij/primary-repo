@@ -1,51 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Cloud Backup System</title>
+  <title>Cloud Backup Dashboard</title>
 
   <style>
     body {
       font-family: Arial;
-      background-color: #eef2f7;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: white;
       text-align: center;
       padding: 20px;
     }
 
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
     .box {
       background: white;
+      color: black;
       padding: 20px;
-      margin: 20px auto;
-      width: 350px;
+      width: 250px;
       border-radius: 10px;
-      box-shadow: 0 0 10px #ccc;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    .status {
+      margin: 20px;
+      font-size: 18px;
     }
 
     button {
       padding: 10px 15px;
       margin: 5px;
-      color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      color: white;
     }
 
-    .update { background-color: #007bff; }
-    .backup { background-color: #28a745; }
-    .fail { background-color: red; }
+    .update { background: #007bff; }
+    .backup { background: #28a745; }
+    .fail { background: red; }
 
-    /* 🔥 حركة النقل */
+    /* Animation */
     #transfer {
-      margin: 20px;
-      font-weight: bold;
-      color: green;
+      margin: 15px;
       display: none;
-      animation: move 1s linear infinite;
+      font-weight: bold;
+      animation: move 1s infinite;
     }
 
     @keyframes move {
-      0% { transform: translateX(-20px); }
-      50% { transform: translateX(20px); }
-      100% { transform: translateX(-20px); }
+      0% { transform: translateX(-30px); }
+      50% { transform: translateX(30px); }
+      100% { transform: translateX(-30px); }
     }
 
   </style>
@@ -54,40 +70,47 @@
 
 <body>
 
-<h1>Multi-Region Backup System</h1>
+<h1>☁️ Cloud Backup Dashboard</h1>
 
-<!-- Primary -->
-<div class="box">
-  <p><b>Primary Region (Iraq)</b></p>
-  <p id="data">Data: Version 1</p>
+<div class="container">
+
+  <div class="box">
+    <h3>Primary Region 🇮🇶</h3>
+    <p id="data">Data: Version 1</p>
+  </div>
+
+  <div class="box">
+    <h3>Backup Region 🇪🇺</h3>
+    <p id="backup">Data: Not Synced ❌</p>
+  </div>
+
 </div>
 
-<!-- Animation -->
-<div id="transfer">⬅️ Transferring Data ➡️</div>
+<div id="transfer">🚀 Transferring Data...</div>
 
-<!-- Backup -->
-<div class="box">
-  <p><b>Backup Region (Europe)</b></p>
-  <p id="backup">Data: Not Synced ❌</p>
+<div class="status">
+  <p id="status">Status: Waiting...</p>
+  <p>Last Backup: <span id="time">-</span></p>
+  <p id="count">Backups: 0</p>
 </div>
 
-<!-- Status -->
-<p id="status">Status: Waiting...</p>
-<p>Last Backup: <span id="time">-</span></p>
-
-<!-- Buttons -->
-<button class="update" onclick="updateData()">Update Data</button>
-<button class="backup" onclick="backup()">Run Backup</button>
-<button class="fail" onclick="failSystem()">Simulate Failure</button>
+<div>
+  <button class="update" onclick="updateData()">Update Data</button>
+  <button class="backup" onclick="backup()">Run Backup</button>
+  <button class="fail" onclick="failSystem()">Simulate Failure</button>
+</div>
 
 <script>
 let version = 1;
+let count = 0;
 
 // تحديث البيانات
 function updateData() {
   version++;
   document.getElementById("data").innerHTML = "Data: Version " + version;
+
   document.getElementById("status").innerHTML = "Status: Data Updated ⚡";
+  document.getElementById("status").style.color = "yellow";
 }
 
 // النسخ الاحتياطي + الحركة
@@ -99,7 +122,12 @@ function backup() {
     var data = document.getElementById("data").innerHTML;
 
     document.getElementById("backup").innerHTML = data + " ✅";
-    document.getElementById("status").innerHTML = "Status: Data Synced ✔️";
+
+    count++;
+    document.getElementById("count").innerHTML = "Backups: " + count;
+
+    document.getElementById("status").innerHTML = "Status: Synced ✔️";
+    document.getElementById("status").style.color = "lightgreen";
 
     var now = new Date();
     document.getElementById("time").innerHTML = now.toLocaleString();
@@ -108,9 +136,13 @@ function backup() {
   }, 1500);
 }
 
-// فشل النظام
+// فشل النظام (Disaster Recovery)
 function failSystem() {
-  document.getElementById("status").innerHTML = "Primary Failed ❌ Switching to Backup ⚠️";
+  document.getElementById("status").innerHTML =
+    "Primary Failed ❌ Switching to Backup ⚠️";
+
+  document.getElementById("status").style.color = "red";
+
   document.getElementById("backup").innerHTML += " (Active Now)";
 }
 </script>
